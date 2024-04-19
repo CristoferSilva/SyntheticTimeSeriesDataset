@@ -1,1 +1,1 @@
-# SyntheticTimeSeriesDataser
+# SyntheticTimeSeriesDataset
