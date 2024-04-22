@@ -2,5 +2,5 @@
 
 The aim of this project is to provide a dataset with multiple time series of varying dependence on each other. See an example in image below:
 
-![[multipleTimeSerie.png]]
+![](https://github.com/CristoferSilva/SyntheticTimeSeriesDataset/blob/dev/multipleTimeSerie.png)
 
