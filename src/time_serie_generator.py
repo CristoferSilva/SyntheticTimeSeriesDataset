@@ -1,4 +1,6 @@
+import os
 import numpy as np
+from joblib import dump
 from matplotlib.pyplot import plot, legend
 
 class TimeSerieGenerator:
@@ -19,12 +21,12 @@ class TimeSerieGenerator:
         return time_serie
     
     def generate_multiple_time_series(self,time_series_size, shift_numbers):
-        multiple_time_series = []
+        self.multiple_time_series = []
 
         for shift_number in shift_numbers:
-            multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number, ))
+             self.multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number, ))
 
-        return multiple_time_series
+        return  self.multiple_time_series
     
     def plot_time_series(self, time_series):
         count = 0
@@ -34,6 +36,17 @@ class TimeSerieGenerator:
             plot(y_axes,time_serie.real,label='Time Serie [{}]'.format(count))
             legend()
             count += 1
+
+    def save(self):    
+        multiple_time_series_array = np.array(self.multiple_time_series).T
+
+        filepath_extension_csv = os.path.join(os.getcwd(), 'sts_dataset.csv')
+        np.savetxt(filepath_extension_csv, multiple_time_series_array, delimiter=',')
+
+        #TO-DO: Apply import h5py
+        # filepath_extension_h5 = os.path.join(os.getcwd(), 'sts_dataset.h5')
+        # with h5py.File(filepath_extension_h5, 'w') as hf:
+        #     hf.create_dataset('dataset', data=multiple_time_series_array)
 
 
    
