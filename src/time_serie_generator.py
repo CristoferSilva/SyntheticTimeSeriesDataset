@@ -1,9 +1,22 @@
 import os
+from random import randint
 import numpy as np
 from joblib import dump
 from matplotlib.pyplot import plot, legend
 
 class TimeSerieGenerator:
+
+    def __init__(self) -> None:
+        self.time_series_with_noise = []
+        self.multiple_time_series = []
+
+    @property
+    def last_generated_series(self):
+        return self.multiple_time_series.copy()
+    
+    @property
+    def last_generated_noisy_series(self):
+        return self.time_series_with_noise.copy()
 
     def __get_shift(self,phase_shift, data_size):
         #using fic func to create shift
@@ -21,12 +34,10 @@ class TimeSerieGenerator:
         return time_serie
     
     def generate_multiple_time_series(self,time_series_size, shift_numbers):
-        self.multiple_time_series = []
-
         for shift_number in shift_numbers:
              self.multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number, ))
 
-        return  self.multiple_time_series
+        return self.multiple_time_series
     
     def plot_time_series(self, time_series):
         count = 0
@@ -36,6 +47,13 @@ class TimeSerieGenerator:
             plot(y_axes,time_serie.real,label='Time Serie [{}]'.format(count))
             legend()
             count += 1
+
+    def generate_multiple_time_series_with_noise(self, multiple_time_series):
+        noise = np.random.normal(0,0.1, len(multiple_time_series[0]))
+        for time_serie in multiple_time_series:
+            self.time_series_with_noise.append(time_serie + noise)
+
+        return self.time_series_with_noise
 
     def save(self):    
         multiple_time_series_array = np.array(self.multiple_time_series).T
@@ -48,5 +66,15 @@ class TimeSerieGenerator:
         # with h5py.File(filepath_extension_h5, 'w') as hf:
         #     hf.create_dataset('dataset', data=multiple_time_series_array)
 
+    def put_anomaly_points(self, amount, time_serie):
+        ts = time_serie.copy()
+        anomaly_position = []
 
-   
+        for _ in range(amount):
+            index = randint(200,len(time_serie)-1)
+            anomaly_position.append(index)
+            coefficient = randint(4,8)
+            ts[index] *= coefficient
+
+        return ts,anomaly_position
+        
