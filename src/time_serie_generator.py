@@ -7,8 +7,7 @@ from matplotlib.pyplot import plot, legend
 class TimeSerieGenerator:
 
     def __init__(self) -> None:
-        self.time_series_with_noise = []
-        self.multiple_time_series = []
+        pass
 
     @property
     def last_generated_series(self):
@@ -34,10 +33,11 @@ class TimeSerieGenerator:
         return time_serie
     
     def generate_multiple_time_series(self,time_series_size, shift_numbers):
+        multiple_time_series = []
         for shift_number in shift_numbers:
-             self.multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number, ))
+            multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number, ))
 
-        return self.multiple_time_series
+        return multiple_time_series
     
     def plot_time_series(self, time_series):
         count = 0
@@ -49,16 +49,15 @@ class TimeSerieGenerator:
             count += 1
 
     def generate_multiple_time_series_with_noise(self, multiple_time_series):
+        time_series_with_noise = []
         noise = np.random.normal(0,0.1, len(multiple_time_series[0]))
         for time_serie in multiple_time_series:
-            self.time_series_with_noise.append(time_serie + noise)
+            time_series_with_noise.append(time_serie + noise)
 
-        return self.time_series_with_noise
+        return time_series_with_noise
 
-    def save(self):    
-        multiple_time_series_array = np.array(self.multiple_time_series).T
-
-        filepath_extension_csv = os.path.join(os.getcwd(), 'sts_dataset.csv')
+    def save(self, multiple_time_series_array: np.array, file_name: str = 'sts_dataset.csv'):
+        filepath_extension_csv = os.path.join(os.getcwd(), file_name)
         np.savetxt(filepath_extension_csv, multiple_time_series_array, delimiter=',')
 
         #TO-DO: Apply import h5py
