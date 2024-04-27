@@ -65,15 +65,15 @@ class TimeSerieGenerator:
         # with h5py.File(filepath_extension_h5, 'w') as hf:
         #     hf.create_dataset('dataset', data=multiple_time_series_array)
 
-    def put_anomaly_points(self, amount, time_serie):
+    def put_anomaly_points(self, amount, time_serie: list):
         ts = time_serie.copy()
-        anomaly_position = []
+        anomaly_labels = np.zeros(len(time_serie))
 
         for _ in range(amount):
             index = randint(200,len(time_serie)-1)
-            anomaly_position.append(index)
+            anomaly_labels[index] = 1
             coefficient = randint(4,8)
             ts[index] *= coefficient
 
-        return ts,anomaly_position
+        return ts,anomaly_labels
         
