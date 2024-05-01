@@ -1,13 +1,15 @@
 import os
-from random import randint
+from random import randint, uniform
 import numpy as np
-from joblib import dump
 from matplotlib.pyplot import plot, legend
 import matplotlib.pyplot as plt
+import scipy
 import scipy.stats as st
+import numpy as np
+from scipy.stats import norm
+import random 
 
 class TimeSerieGenerator:
-
     def __init__(self) -> None:
         pass
 
@@ -41,20 +43,21 @@ class TimeSerieGenerator:
 
         return multiple_time_series
     
-    def plot_time_series(self, time_series):
+    def plot_time_series(self, time_series, time_series_name):
         count = 0
         y_axes = np.linspace(0, 2*np.pi, len(time_series[0])) 
 
         for time_serie in time_series:
-            plot(y_axes,time_serie.real,label='Time Serie [{}]'.format(count))
+            plot(y_axes,time_serie.real,label='Time Series [{}]'.format(time_series_name[count]), alpha=0.6)
+            plt.ylim(-1.5, 1.5)
             legend()
             count += 1
 
     def generate_multiple_time_series_with_noise(self, multiple_time_series):
         time_series_with_noise = []
         noise = np.random.normal(0,0.1, len(multiple_time_series[0]))
-        for time_serie in multiple_time_series:
-            time_series_with_noise.append(time_serie + noise)
+        for time_series in multiple_time_series:
+            time_series_with_noise.append(time_series + noise)
 
         return time_series_with_noise
 
@@ -74,10 +77,45 @@ class TimeSerieGenerator:
         for _ in range(amount):
             index = randint(200,len(time_serie)-1)
             anomaly_labels[index] = 1
-            coefficient = randint(4,8)
+            coefficient = uniform(1.1,1.5)
             ts[index] *= coefficient
 
         return ts,anomaly_labels
+    
+    def put_gaussian_anomaly_points(self, amount, time_series: list):
+        ts = time_series.copy()
+        anomaly_labels = np.zeros(len(time_series))
+        origin_mean = time_series.mean()
+        origin_std = time_series.std()
+        ts = self.normalize(time_series)
+
+        for _ in range(amount):
+            index = randint(200,len(time_series)-1)
+            anomaly_labels[index] = 1
+            mean, std = norm.fit(ts)
+            std = std 
+            low_prob_value = self.get_low_prob_value(ts, mean, std)
+            ts[index] = low_prob_value
+
+        return self.denormalize(ts, origin_mean, origin_std),anomaly_labels
+    
+    def normalize(self, X):
+        mean = X.mean()
+        std = X.std()
+        X_norm = (X - mean)/std
+        return X_norm
+    
+    def denormalize(self, X_norm, mean, std):
+        X_denorm = X_norm * std + mean
+        return X_denorm
+    
+    def get_low_prob_value(self,time_series, mean, std):
+        shuffled_data = random.sample(time_series.tolist(), len(time_series))
+        for element in shuffled_data:
+            prob = scipy.stats.norm(loc= mean, scale= std).pdf(element)
+            if 0.15 < prob < 0.16:
+                return element
+        return None
     
     def plot_confidence_interval(self, series_comparisons, series_comparisons_str):
         fig, ax = plt.subplots()
@@ -89,7 +127,7 @@ class TimeSerieGenerator:
             left = (1 - horizontal_line_width / 2) + index
             right = (1 + horizontal_line_width / 2) + index
 
-            plt.title('Confidence Interval')
+            plt.title('Pearson correlation coefficient')
             ax.plot([index+1,index+1], [ci_95.high ,ci_95.low], color='#2187bb', label='Sine')
             plt.plot([left, right], [ci_95.high, ci_95.high], color='#2187bb')
             plt.plot([left, right], [ci_95.low, ci_95.low], color='#2187bb')
