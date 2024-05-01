@@ -30,12 +30,12 @@ class TimeSerieGenerator:
         shift = self.__get_shift(phase_shift=piBy4, data_size=len(values))
         shifted_sin_frequency_domain = np.fft.fft(sin)*shift
         time_serie = np.fft.ifft(shifted_sin_frequency_domain)
-        return time_serie
+        return time_serie.real
     
     def generate_multiple_time_series(self,time_series_size, shift_numbers):
         multiple_time_series = []
         for shift_number in shift_numbers:
-            multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number, ))
+            multiple_time_series.append(self.generate_time_serie(size=time_series_size, shift_number=shift_number))
 
         return multiple_time_series
     
