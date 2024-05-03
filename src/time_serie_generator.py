@@ -61,9 +61,20 @@ class TimeSerieGenerator:
 
         return time_series_with_noise
 
-    def save(self, multiple_time_series_array: np.array, file_name: str = 'sts_dataset.csv'):
+    def save(self, multiple_time_series_array: np.ndarray, file_name: str = 'sts_dataset.csv'):
         filepath_extension_csv = os.path.join(os.getcwd(), file_name)
-        np.savetxt(filepath_extension_csv, multiple_time_series_array, delimiter=',')
+        
+        if not isinstance(multiple_time_series_array, np.ndarray):
+             raise ValueError("O argumento 'multiple_time_series_array' deve ser um array NumPy.")
+        
+        columns_number = multiple_time_series_array.shape[1]
+        columns_name = [f"Time Series {i+1}" for i in range(columns_number)]
+
+        with open(filepath_extension_csv, "a") as file_csv:
+            file_csv.write(",".join(columns_name) + "\n")
+
+        with open(filepath_extension_csv, "a") as file_csv:
+            np.savetxt(file_csv, multiple_time_series_array, delimiter=',')
 
         #TO-DO: Apply import h5py
         # filepath_extension_h5 = os.path.join(os.getcwd(), 'sts_dataset.h5')
