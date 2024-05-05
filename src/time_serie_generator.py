@@ -27,9 +27,9 @@ class TimeSerieGenerator:
         shift[phase_shift] = 1.0
         return np.fft.fft(shift)
     
-    def generate_time_serie(self, size, shift_number = 4):
-        values = np.linspace(0, 2*np.pi,size)
-        sin = np.sin(values)
+    def generate_time_serie(self, size, shift_number = 4, multiplicator = 1):
+        values = np.linspace(-2*np.pi, 2*np.pi,size)
+        sin = np.sin(values) * multiplicator
         piBy4 = size//shift_number
         shift = self.__get_shift(phase_shift=piBy4, data_size=len(values))
         shifted_sin_frequency_domain = np.fft.fft(sin)*shift
@@ -109,6 +109,20 @@ class TimeSerieGenerator:
             ts[index] = low_prob_value
 
         return self.denormalize(ts, origin_mean, origin_std),anomaly_labels
+    
+    def put_overlap_anomaly_points(self, amount, time_serie, seriesofAbnormalPoints):
+        ts = np.array(time_serie.copy())
+        anomaly_labels = np.zeros(len(time_serie))
+        seriesofAbnormalPoints = np.array(seriesofAbnormalPoints)
+
+        for _ in range(amount):
+            index = int(np.random.choice(ts.shape[0], 1, replace=False))
+            index_range = index + 50
+            anomaly_labels[index:index_range] = 1
+            serieofAbnormalPoints = seriesofAbnormalPoints[np.random.choice(seriesofAbnormalPoints.shape[0], 1, replace=False)]
+            ts[index:index_range] = serieofAbnormalPoints[0][index:index_range]
+
+        return ts, anomaly_labels
     
     def normalize(self, X):
         mean = X.mean()
