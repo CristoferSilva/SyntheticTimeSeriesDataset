@@ -65,7 +65,7 @@ class TimeSerieGenerator:
         filepath_extension_csv = os.path.join(os.getcwd(), file_name)
         
         if not isinstance(multiple_time_series_array, np.ndarray):
-             raise ValueError("O argumento 'multiple_time_series_array' deve ser um array NumPy.")
+             raise ValueError("The 'multiple_time_series_array' argument must be a NumPy array.")
         
         columns_number = multiple_time_series_array.shape[1]
         columns_name = [f"Time Series {i+1}" for i in range(columns_number)]
