@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import soundfile as sf
 import numpy as np 
 
 class WaveGenerator:
@@ -18,3 +19,6 @@ class WaveGenerator:
         ax[1].plot(np.log(np.abs(np.fft.fft(serie[:w])))[:int(w/2)], c=color, label=label_hz)
         ax[1].legend()
         plt.legend()
+
+    def generate_wav_file(self, file_name, serie, sampling_rate = 16000):
+        sf.write(file_name + '.wav', serie, sampling_rate)
