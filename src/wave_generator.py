@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import soundfile as sf
 import numpy as np 
+import os
 
 class WaveGenerator:
     def __init__(self, start: int = 0, stop: int = 10, data_number: int = 160000) -> None:
@@ -22,5 +23,16 @@ class WaveGenerator:
         ax[1].legend()
         plt.legend()
 
-    def generate_wav_file(self, file_name, serie, sampling_rate = 16000):
-        sf.write(file_name + '.wav', serie, sampling_rate)
+    def generate_wav_file(self, file_name, serie, folder_name = 'syntheticWaves', sampling_rate = 16000, amount=10):
+        path = './'+folder_name
+        
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+        initial_index = 0
+        final_index = sum_coeficient = int(len(serie)/amount)
+
+        for i in range(amount):
+            sf.write(path+'/'+file_name + str(i)+ '.wav', serie[initial_index:final_index], sampling_rate)
+            initial_index = final_index
+            final_index += sum_coeficient
