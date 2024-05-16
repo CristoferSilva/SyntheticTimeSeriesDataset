@@ -162,6 +162,4 @@ class TimeSerieGenerator:
 
         plt.xticks(np.linspace(1, index, index) , series_comparisons_str)
         plt.show()
-
-        
         
