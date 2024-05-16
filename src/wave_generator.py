@@ -5,12 +5,10 @@ class WaveGenerator:
     def __init__(self) -> None:
         pass
     
-    def generate_time_series(self, quantity_time_series: int = 3, start: int = 0, stop: int = 10, data_number: int = 160000):
-        time_series = []
+    def generate_time_series(self, frequency: float, start: int = 0, stop: int = 10, data_number: int = 160000):
+        data_ponits = np.linspace(start=start, stop=stop, num=data_number)
         
-        for i in range(quantity_time_series):
-            time_series.append(np.linspace(start=start, stop=stop, num=data_number))
-        return time_series
+        return np.sin(frequency*data_ponits) + 0.1*np.random.rand(len(data_ponits))
     
 
     def plot_wave(self, serie, w = 1024, label_hz = 'Hz', color='b'):
