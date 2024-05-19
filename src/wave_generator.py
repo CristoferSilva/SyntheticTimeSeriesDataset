@@ -15,7 +15,7 @@ class WaveGenerator:
         sine_wave = np.sin(coeficient_pi*self.data_ponits)
         return first_time_series*sine_wave + (1-sine_wave)*second_time_series
 
-    def plot_wave(self, serie, w = 1024, label_hz = 'Hz', color='b'):
+    def plot_wave(self, serie, w = 16000, label_hz = 'Hz', color='b'):
         f, ax = plt.subplots(1, 2, figsize=(10, 5))
         ax[0].plot(serie[:2*w], c=color, label=label_hz)
         ax[0].legend()
