@@ -7,6 +7,14 @@ class WaveGenerator:
     def __init__(self, start: int = 0, stop: int = 10, data_number: int = 160000) -> None:
         self.data_ponits = np.linspace(start=start, stop=stop, num=data_number)
         pass
+
+    def add_noise(self, multiple_time_series):
+        time_series_with_noise = []
+        noise = np.random.normal(0,0.1, len(multiple_time_series[0]))
+        for time_series in multiple_time_series:
+            time_series_with_noise.append(time_series + noise)
+
+        return time_series_with_noise    
     
     def generate_time_series(self, angular_frequency: float):
         return np.sin(angular_frequency*self.data_ponits) + 0.1*np.random.rand(len(self.data_ponits))
